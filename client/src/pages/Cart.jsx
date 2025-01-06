@@ -1,7 +1,10 @@
+import { useMemo} from "react";
 import CartItem from "../components/CartItem";
 import {loadStripe} from '@stripe/stripe-js';
 
 const Cart = ({ cart, setCart }) => {
+  
+
   const incrementQuantity = (productId) => {
     const updatedCart = cart.map((p) =>
       p.id === productId ? { ...p, quantity: p.quantity + 1 } : p
@@ -21,8 +24,14 @@ const Cart = ({ cart, setCart }) => {
   const removeFromCart = (productId) => {
     setCart(cart.filter((p) => p.id !== productId));
   };
+  
 
-  const totalPrice = cart.reduce((acc,item) => acc+item.quantity*item.price ,0);
+  
+  const totalPrice = useMemo(()=>{
+    return cart.reduce((sum,item) => sum+item.quantity*item.price ,0);
+  },[cart])
+
+  
 
   const handleCheckout = async() =>{
    try{
@@ -47,10 +56,14 @@ const Cart = ({ cart, setCart }) => {
    }
   }
 
+  
+  
+
 
   return (
     <section className="py-24 px-5">
       <h2 className="text-2xl font-bold text-center mb-5">Your Cart</h2>
+     
      {
        totalPrice > 0 &&  <div className=" p-5 font-semibold">
        <div className="flex flex-col w-fit gap-3 border p-3 rounded-lg">
